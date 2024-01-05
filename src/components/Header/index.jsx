@@ -1,7 +1,9 @@
 import React from 'react';
-import Button from '@mui/material/Button';
+import { Link } from 'react-router-dom';
+
 
 import styles from './Header.module.scss';
+import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 
 export const Header = () => {
@@ -13,27 +15,27 @@ export const Header = () => {
     <div className={styles.root}>
       <Container maxWidth="lg">
         <div className={styles.inner}>
-          <a className={styles.logo} href="/">
-            <div>ARCHAKOV BLOG</div>
-          </a>
+          <Link className={styles.logo} to="/">
+            <div>BLOGGER</div>
+          </Link>
           <div className={styles.buttons}>
             {isAuth ? (
               <>
-                <a href="/posts/create">
-                  <Button variant="contained">Написать статью</Button>
-                </a>
+                <Link to="/posts/create">
+                  <Button variant="contained">Create post</Button>
+                </Link>
                 <Button onClick={onClickLogout} variant="contained" color="error">
-                  Выйти
+                  Log Out
                 </Button>
               </>
             ) : (
               <>
-                <a href="/login">
-                  <Button variant="outlined">Войти</Button>
-                </a>
-                <a href="/register">
-                  <Button variant="contained">Создать аккаунт</Button>
-                </a>
+                <Link to="/login">
+                  <Button variant="outlined">Log In</Button>
+                </Link>
+                <Link to="/register">
+                  <Button variant="contained">Create account</Button>
+                </Link>
               </>
             )}
           </div>
