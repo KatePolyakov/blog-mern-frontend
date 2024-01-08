@@ -1,14 +1,17 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 
 import { useForm } from 'react-hook-form';
+import { fetchAuth } from '../../redux/slices/auth';
 
 import styles from './Login.module.scss';
 
 export const Login = () => {
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
@@ -16,14 +19,14 @@ export const Login = () => {
     formState: { errors, isValid },
   } = useForm({
     defaultValues: {
-      email: '',
-      password: '',
+      email: 'lololups@mm.com',
+      password: '12345',
     },
-    mode: 'all',
+    mode: 'onChange',
   });
 
   const onSubmit = (values) => {
-    console.log(values);
+    dispatch(fetchAuth(values));
   };
   return (
     <Paper classes={{ root: styles.root }}>
@@ -35,7 +38,7 @@ export const Login = () => {
           {...register('email', { required: 'Enter your email' })}
           className={styles.field}
           label="E-Mail"
-          type='email'
+          type="email"
           error={Boolean(errors.email?.message)}
           helperText={errors.email?.message}
           fullWidth
