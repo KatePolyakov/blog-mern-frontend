@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -17,6 +17,9 @@ export const AddPost = () => {
   const isAuth = useSelector(selectIsAuth);
   const imageUrl = '';
   const [value, setValue] = React.useState('');
+
+  const [title, setTitle] = useState('');
+  const [tags, setTags] = useState('');
 
   const handleChangeFile = () => {};
 
@@ -41,9 +44,11 @@ export const AddPost = () => {
     [],
   );
 
-  if (!isAuth) {
+  if (!window.localStorage.getItem('token') && !isAuth) {
     return <Navigate to="/" />;
   }
+
+  console.log(title, tags, value);
 
   return (
     <Paper style={{ padding: 30 }}>
@@ -65,9 +70,18 @@ export const AddPost = () => {
         classes={{ root: styles.title }}
         variant="standard"
         placeholder="Title..."
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
         fullWidth
       />
-      <TextField classes={{ root: styles.tags }} variant="standard" placeholder="Tags" fullWidth />
+      <TextField
+        classes={{ root: styles.tags }}
+        variant="standard"
+        placeholder="Tags"
+        value={tags}
+        onChange={(e) => setTags(e.target.value)}
+        fullWidth
+      />
       <SimpleMDE className={styles.editor} value={value} onChange={onChange} options={options} />
       <div className={styles.buttons}>
         <Button size="large" variant="contained">
