@@ -1,6 +1,6 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useCallback } from 'react';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { useNavigate, Navigate, useParams } from 'react-router-dom';
 import axios from '../../axios';
 import { useSelector } from 'react-redux';
 
@@ -16,6 +16,7 @@ import { selectIsAuth } from '../../redux/slices/auth';
 import styles from './AddPost.module.scss';
 
 export const AddPost = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const isAuth = useSelector(selectIsAuth);
@@ -28,6 +29,9 @@ export const AddPost = () => {
   const [text, setText] = useState(''); //post hooks
   const [title, setTitle] = useState(''); //title hooks
   const [tags, setTags] = useState(''); //tags hooks
+
+  //edit post
+  const isEditing = Boolean(id);
 
   const handleChangeFile = async (event) => {
     try {
@@ -42,12 +46,27 @@ export const AddPost = () => {
     }
   };
 
+  //remove image
   const onClickRemoveImage = () => {
     setImageUrl('');
   };
 
   const onChange = useCallback((value) => {
     setText(value);
+  }, []);
+
+  //edit post
+
+  useEffect(() => {
+    if (id) {
+      axios.get(`/posts/${id}`).then( ({ data }) => {
+        setTitle(data.title);
+        setText(data.text);
+        setImageUrl(data.imageUrl);
+        setTags(data.tags.join(','));
+
+      });
+    }
   }, []);
 
   const onSubmit = async () => {
@@ -61,11 +80,15 @@ export const AddPost = () => {
         text,
       };
 
-      const { data } = await axios.post('/posts', fields);
+      
 
-      const id = data._id;
+      const { data } = isEditing 
+      ? await axios.patch(`/posts/${id}`, fields)
+      : await axios.post('/posts', fields);
 
-      navigate(`/posts/${id}`);
+      const _id = isEditing ? id : data._id;
+
+      navigate(`/posts/${_id}`);
     } catch (error) {
       console.warn(error);
       alert('Error post');
@@ -126,7 +149,7 @@ export const AddPost = () => {
       <SimpleMDE className={styles.editor} value={text} onChange={onChange} options={options} />
       <div className={styles.buttons}>
         <Button size="large" variant="contained" onClick={onSubmit}>
-          Public
+          {isEditing ? 'Save' : 'Public'}
         </Button>
         <a href="/">
           <Button size="large">Cancel</Button>
