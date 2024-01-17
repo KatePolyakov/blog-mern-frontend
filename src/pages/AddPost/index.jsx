@@ -2,6 +2,7 @@ import React, { useMemo, useRef, useState } from 'react';
 import { useCallback } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import axios from '../../axios';
 
 import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
@@ -11,7 +12,6 @@ import SimpleMDE from 'react-simplemde-editor';
 import 'easymde/dist/easymde.min.css';
 
 import { selectIsAuth } from '../../redux/slices/auth';
-import axios from '../../axios';
 
 import styles from './AddPost.module.scss';
 
@@ -57,7 +57,7 @@ export const AddPost = () => {
       const fields = {
         title,
         imageUrl,
-        tags: tags.split(',', ''),
+        tags,
         text,
       };
 
